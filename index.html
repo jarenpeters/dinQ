@@ -20,6 +20,11 @@
       color: #fff;
     }
 
+    body, .app-title, .section-title, .court-number, .court-timer,
+    .player-slot, .nav-btn {
+      color: #fff !important;
+    }
+
     .app-container {
       height: 100vh;
       display: flex;
@@ -30,14 +35,18 @@
     }
 
     .top-bar {
-      background: #1a2e1a;
-      border-radius: 10px;
-      padding: 15px 20px;
+      background: #264d26;  /* darker green for contrast */
+      border-radius: 0;     /* square edges give it a header look */
+      padding: 10px 15px;   /* tighter padding */
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+
+    .logo img {
+      height: 40px; /* adjust as needed */
+      object-fit: contain;
     }
 
     .app-title {
@@ -49,7 +58,7 @@
 
     .nav-buttons {
       display: flex;
-      gap: 15px;
+      gap: 10px;
     }
 
     .nav-btn {
@@ -376,23 +385,21 @@
 
     @media (max-width: 768px) {
       .courts-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-        gap: 15px;
-      }
-
-      .app-title {
-        font-size: 1.8em;
-      }
-
-      .nav-btn {
-        padding: 8px 12px;
-        font-size: 0.85em;
+        grid-template-columns: 1fr;  /* stack vertically */
+        grid-template-rows: auto;
+        gap: 12px;
+        padding: 0;
       }
 
       .top-bar {
-        flex-direction: column;
-        gap: 15px;
+        flex-direction: row;   /* keep logo + buttons on one line */
+        justify-content: space-between;
+        gap: 0;
+      }
+
+      .nav-btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
       }
     }
   </style>
