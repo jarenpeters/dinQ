@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dinQ - Pickleball Court Queue</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0d1f0d;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    .app-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    .top-bar {
+      background: #1a2e1a;
+      border-radius: 10px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .app-title {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #4a7c4a;
+      letter-spacing: 2px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      background: #2d4a2d;
+      color: #fff;
+      border: 2px solid #3a5c3a;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-btn:hover {
+      background: #3a5c3a;
+    }
+
+    .courts-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 1.5em;
+      color: #4a7c4a;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .courts-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .courts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 20px;
+      flex: 1;
+      padding: 0 50px;
+    }
+
+    .court {
+      background: #1a2e1a;
+      border: 3px solid #3a5c3a;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .court:hover {
+      border-color: #4a7c4a;
+    }
+
+    .court.occupied {
+      border-color: #7ca652;
+    }
+
+    .court-header {
+      background: #2d4a2d;
+      padding: 10px;
+      text-align: center;
+      border-radius: 7px 7px 0 0;
+    }
+
+    .court-number {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #7ca652;
+    }
+
+    .court-timer {
+      font-size: 0.85em;
+      color: #9fc774;
+      margin-top: 3px;
+    }
+
+    .court-players-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      flex: 1;
+      gap: 2px;
+      padding: 2px;
+    }
+
+    .player-slot {
+      background: #0d1f0d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 5px;
+      font-size: 0.85em;
+      color: #7ca652;
+      text-align: center;
+      min-height: 50px;
+    }
+
+    .player-slot.occupied {
+      background: #2d4a2d;
+      color: #9fc774;
+    }
+
+    .page-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #2d4a2d;
+      border: 2px solid #3a5c3a;
+      color: #fff;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .page-nav:hover {
+      background: #3a5c3a;
+    }
+
+    .page-nav.prev {
+      left: 5px;
+    }
+
+    .page-nav.next {
+      right: 5px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #1a2e1a;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      border: 2px solid #3a5c3a;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 1.5em;
+      color: #7ca652;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #7ca652;
+      font-size: 1.8em;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #7ca652;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #2d4a2d;
+      border-radius: 5px;
+      background: #0d1f0d;
+      color: #fff;
+      font-size: 1em;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .player-section {
+      background: #0d1f0d;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #2d4a2d;
+    }
+
+    .player-header {
+      color: #7ca652;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: #2d4a2d;
+      color: #fff;
+      border: 2px solid #3a5c3a;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background: #3a5c3a;
+    }
+
+    .queue-item {
+      background: #0d1f0d;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #2d4a2d;
+    }
+
+    .queue-info {
+      flex: 1;
+      color: #9fc774;
+    }
+
+    .delete-btn {
+      background: #8b2c1f;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .delete-btn:hover {
+      background: #a63426;
+    }
+
+    .time-selection {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .time-option {
+      flex: 1;
+      padding: 15px;
+      background: #0d1f0d;
+      border: 2px solid #2d4a2d;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .time-option:hover {
+      background: #1a2e1a;
+    }
+
+    .time-option.selected {
+      background: #2d4a2d;
+      border-color: #4a7c4a;
+    }
+
+    .rules-content {
+      color: #9fc774;
+      line-height: 1.6;
+    }
+
+    .rules-content h3 {
+      color: #7ca652;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+
+    .rules-content ul {
+      padding-left: 20px;
+    }
+
+    .rules-content li {
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .courts-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 15px;
+      }
+
+      .app-title {
+        font-size: 1.8em;
+      }
+
+      .nav-btn {
+        padding: 8px 12px;
+        font-size: 0.85em;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="top-bar">
+    <div class="app-title">dinQ</div>
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="openAddToQueue()">Add to Queue</button>
+      <button class="nav-btn" onclick="openViewQueue()">View Queue</button>
+      <button class="nav-btn" onclick="openRules()">Rules</button>
+    </div>
+  </div>
+
+  <div class="courts-section">
+    <div class="section-title" id="sectionTitle">South Courts</div>
+    <div class="courts-container">
+      <button class="page-nav prev" onclick="changePage(-1)">‹</button>
+      <div class="courts-grid" id="courtsGrid"></div>
+      <button class="page-nav next" onclick="changePage(1)">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add to Queue Modal -->
+<div class="modal" id="addQueueModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Add to Queue</h2>
+      <button class="close-btn" onclick="closeModal('addQueueModal')">×</button>
+    </div>
+    <div id="playerForms"></div>
+    <div class="form-group">
+      <label>Number of Players:</label>
+      <select id="numPlayers" onchange="updatePlayerForms()">
+        <option value="1">1 Player</option>
+        <option value="2">2 Players</option>
+        <option value="3">3 Players</option>
+        <option value="4">4 Players</option>
+      </select>
+    </div>
+    <div id="playerInputs"></div>
+    <div class="form-group">
+      <label>Play Time:</label>
+      <div class="time-selection">
+        <div class="time-option" onclick="selectTime(30, this)">
+          <strong>30 Minutes</strong>
+        </div>
+        <div class="time-option" onclick="selectTime(60, this)">
+          <strong>60 Minutes</strong>
+        </div>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitToQueue()">Submit to Queue</button>
+  </div>
+</div>
+
+<!-- View Queue Modal -->
+<div class="modal" id="viewQueueModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Current Queue</h2>
+      <button class="close-btn" onclick="closeModal('viewQueueModal')">×</button>
+    </div>
+    <div id="queueList"></div>
+  </div>
+</div>
+
+<!-- Rules Modal -->
+<div class="modal" id="rulesModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Pickleball Rules</h2>
+      <button class="close-btn" onclick="closeModal('rulesModal')">×</button>
+    </div>
+    <div class="rules-content">
+      <h3>Basic Rules</h3>
+      <ul>
+        <li>Games are played to 11 points, win by 2</li>
+        <li>Points can only be scored by the serving team</li>
+        <li>The ball must be served underhand and diagonally cross-court</li>
+        <li>The ball must bounce once on each side before volleys are allowed</li>
+      </ul>
+
+      <h3>The Kitchen (Non-Volley Zone)</h3>
+      <ul>
+        <li>The 7-foot zone on both sides of the net is called "the kitchen"</li>
+        <li>You cannot volley the ball while standing in the kitchen</li>
+        <li>You may enter the kitchen after the ball has bounced</li>
+      </ul>
+
+      <h3>Double Bounce Rule</h3>
+      <ul>
+        <li>When the ball is served, the receiving team must let it bounce before returning</li>
+        <li>The serving team must then let it bounce before returning</li>
+        <li>After these two bounces, the ball can be volleyed or played off the bounce</li>
+      </ul>
+
+      <h3>Serving Rules</h3>
+      <ul>
+        <li>Server must keep one foot behind the baseline</li>
+        <li>Serve is made underhand with paddle below waist</li>
+        <li>Ball must land in diagonal service court</li>
+        <li>Only one serve attempt is allowed</li>
+      </ul>
+
+      <h3>Scoring</h3>
+      <ul>
+        <li>Points are scored only on the serve</li>
+        <li>In doubles, both players serve before side out (except first serve of game)</li>
+        <li>Server calls score as: serving team score - receiving team score - server number</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Court Details Modal -->
+<div class="modal" id="courtDetailsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="courtDetailsTitle">Court Details</h2>
+      <button class="close-btn" onclick="closeModal('courtDetailsModal')">×</button>
+    </div>
+    <div id="courtDetailsContent"></div>
+  </div>
+</div>
+
+<script>
+  let currentPage = 0;
+  let selectedTime = null;
+  let queue = [];
+  let courts = [];
+
+  // Initialize courts
+  function initializeCourts() {
+    for (let i = 1; i <= 12; i++) {
+      courts.push({
+        id: i,
+        players: [],
+        timeRemaining: 0,
+        playTime: 0,
+        startTime: null
+      });
+    }
+    loadFromStorage();
+    renderCourts();
+    startTimerSystem();
+  }
+
+  // Render courts
+  function renderCourts() {
+    const grid = document.getElementById('courtsGrid');
+    grid.innerHTML = '';
+
+    // Update section title
+    document.getElementById('sectionTitle').textContent =
+      currentPage === 0 ? 'South Courts' : 'North Courts';
+
+    const start = currentPage * 6;
+    const end = start + 6;
+    const visibleCourts = courts.slice(start, end);
+
+    visibleCourts.forEach(court => {
+      const courtEl = document.createElement('div');
+      courtEl.className = `court ${court.players.length > 0 ? 'occupied' : ''}`;
+      courtEl.onclick = () => showCourtDetails(court.id);
+
+      // Create court header
+      const header = document.createElement('div');
+      header.className = 'court-header';
+      header.innerHTML = `
+                    <div class="court-number">Court ${court.id}</div>
+                    ${court.players.length > 0 ?
+        `<div class="court-timer">${formatTime(court.timeRemaining)}</div>` :
+        '<div class="court-timer">Available</div>'}
+                `;
+
+      // Create 2x2 player grid
+      const playersGrid = document.createElement('div');
+      playersGrid.className = 'court-players-grid';
+
+      for (let i = 0; i < 4; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'player-slot';
+
+        if (court.players[i]) {
+          slot.classList.add('occupied');
+          slot.textContent = court.players[i].name;
+        } else {
+          slot.textContent = 'Empty';
+        }
+
+        playersGrid.appendChild(slot);
+      }
+
+      courtEl.appendChild(header);
+      courtEl.appendChild(playersGrid);
+      grid.appendChild(courtEl);
+    });
+  }
+
+  // Format time
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // Page navigation
+  function changePage(direction) {
+    const newPage = currentPage + direction;
+    if (newPage >= 0 && newPage <= 1) {
+      currentPage = newPage;
+      renderCourts();
+    }
+  }
+
+  // Modal functions
+  function openAddToQueue() {
+    document.getElementById('addQueueModal').classList.add('active');
+    updatePlayerForms();
+  }
+
+  function openViewQueue() {
+    document.getElementById('viewQueueModal').classList.add('active');
+    renderQueue();
+  }
+
+  function openRules() {
+    document.getElementById('rulesModal').classList.add('active');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+  }
+
+  // Update player forms
+  function updatePlayerForms() {
+    const numPlayers = parseInt(document.getElementById('numPlayers').value);
+    const container = document.getElementById('playerInputs');
+    container.innerHTML = '';
+
+    for (let i = 1; i <= numPlayers; i++) {
+      const playerSection = document.createElement('div');
+      playerSection.className = 'player-section';
+      playerSection.innerHTML = `
+                    <div class="player-header">Player ${i}</div>
+                    <div class="form-group">
+                        <label>Name:</label>
+                        <input type="text" id="player${i}Name" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label>Age:</label>
+                        <input type="number" id="player${i}Age" placeholder="Enter age" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender:</label>
+                        <select id="player${i}Gender">
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                `;
+      container.appendChild(playerSection);
+    }
+  }
+
+  // Select time
+  function selectTime(minutes, element) {
+    selectedTime = minutes;
+    document.querySelectorAll('.time-option').forEach(opt => {
+      opt.classList.remove('selected');
+    });
+    element.classList.add('selected');
+  }
+
+  // Submit to queue
+  function submitToQueue() {
+    const numPlayers = parseInt(document.getElementById('numPlayers').value);
+    const group = {
+      id: Date.now(),
+      players: [],
+      playTime: selectedTime
+    };
+
+    // Validate and collect player data
+    for (let i = 1; i <= numPlayers; i++) {
+      const name = document.getElementById(`player${i}Name`).value;
+      const age = document.getElementById(`player${i}Age`).value;
+      const gender = document.getElementById(`player${i}Gender`).value;
+
+      if (!name || !age || !gender) {
+        alert('Please fill in all player information');
+        return;
+      }
+
+      group.players.push({ name, age, gender });
+    }
+
+    if (!selectedTime) {
+      alert('Please select a play time');
+      return;
+    }
+
+    // Try to assign to court or add to queue
+    if (!assignToCourt(group)) {
+      queue.push(group);
+    }
+
+    saveToStorage();
+    closeModal('addQueueModal');
+    renderCourts();
+
+    // Reset form
+    selectedTime = null;
+    document.querySelectorAll('.time-option').forEach(opt => {
+      opt.classList.remove('selected');
+    });
+  }
+
+  // Assign group to court (with smart assignment)
+  function assignToCourt(group) {
+    const groupSize = group.players.length;
+
+    // First, try to find an empty court
+    for (let court of courts) {
+      if (court.players.length === 0) {
+        court.players = group.players;
+        court.timeRemaining = group.playTime * 60;
+        court.playTime = group.playTime;
+        court.startTime = Date.now();
+        return true;
+      }
+    }
+
+    // If no empty court, try to find a court with space
+    for (let court of courts) {
+      const availableSlots = 4 - court.players.length;
+      if (availableSlots >= groupSize && court.playTime === group.playTime) {
+        // Add players to existing court
+        court.players = court.players.concat(group.players);
+        // Don't reset the timer - keep the existing timer
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // Process queue
+  function processQueue() {
+    if (queue.length === 0) return;
+
+    let i = 0;
+    while (i < queue.length) {
+      const group = queue[i];
+      if (assignToCourt(group)) {
+        queue.splice(i, 1);
+        saveToStorage();
+        renderCourts();
+      } else {
+        i++;
+      }
+    }
+  }
+
+  // Timer system
+  function startTimerSystem() {
+    setInterval(() => {
+      let updated = false;
+      courts.forEach(court => {
+        if (court.players.length > 0 && court.timeRemaining > 0) {
+          court.timeRemaining--;
+          updated = true;
+
+          if (court.timeRemaining === 0) {
+            court.players = [];
+            court.startTime = null;
+            court.playTime = 0;
+            processQueue();
+          }
+        }
+      });
+
+      if (updated) {
+        saveToStorage();
+        renderCourts();
+      }
+    }, 1000);
+  }
+
+  // Render queue
+  function renderQueue() {
+    const queueList = document.getElementById('queueList');
+
+    if (queue.length === 0) {
+      queueList.innerHTML = '<p style="color: #7ca652;">No groups in queue</p>';
+      return;
+    }
+
+    queueList.innerHTML = '';
+    queue.forEach((group, index) => {
+      const item = document.createElement('div');
+      item.className = 'queue-item';
+
+      const queueInfo = document.createElement('div');
+      queueInfo.className = 'queue-info';
+      queueInfo.innerHTML = `
+                    <strong>Group ${index + 1}</strong><br>
+                    Players: ${group.players.map(p => p.name).join(', ')}<br>
+                    Play Time: ${group.playTime} minutes
+                `;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.onclick = () => deleteFromQueue(group.id);
+
+      item.appendChild(queueInfo);
+      item.appendChild(deleteBtn);
+      queueList.appendChild(item);
+    });
+  }
+
+  // Delete from queue
+  function deleteFromQueue(groupId) {
+    if (confirm('Are you sure you want to delete this group from the queue?')) {
+      queue = queue.filter(g => g.id !== groupId);
+      saveToStorage();
+      renderQueue();
+    }
+  }
+
+  // Show court details
+  function showCourtDetails(courtId) {
+    const court = courts.find(c => c.id === courtId);
+    document.getElementById('courtDetailsTitle').textContent = `Court ${courtId} Details`;
+
+    const content = document.getElementById('courtDetailsContent');
+    if (court.players.length === 0) {
+      content.innerHTML = '<p style="color: #7ca652;">This court is currently available</p>';
+    } else {
+      let playersList = court.players.map(p =>
+        `<li>${p.name} (Age: ${p.age}, Gender: ${p.gender})</li>`
+      ).join('');
+
+      content.innerHTML = `
+                    <div style="color: #9fc774;">
+                        <h3 style="color: #7ca652;">Current Players:</h3>
+                        <ul>${playersList}</ul>
+                        <h3 style="color: #7ca652;">Time Remaining:</h3>
+                        <p style="font-size: 1.2em; color: #9fc774;">${formatTime(court.timeRemaining)}</p>
+                        <h3 style="color: #7ca652;">Available Slots:</h3>
+                        <p>${4 - court.players.length} slot(s) available</p>
+                    </div>
+                `;
+    }
+
+    document.getElementById('courtDetailsModal').classList.add('active');
+  }
+
+  // Storage functions
+  function saveToStorage() {
+    const data = {
+      courts: courts,
+      queue: queue
+    };
+    localStorage.setItem('dinQData', JSON.stringify(data));
+  }
+
+  function loadFromStorage() {
+    const data = localStorage.getItem('dinQData');
+    if (data) {
+      const parsed = JSON.parse(data);
+      courts = parsed.courts || courts;
+      queue = parsed.queue || [];
+    }
+  }
+
+  // Initialize app
+  initializeCourts();
+</script>
+</body>
+</html>
