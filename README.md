@@ -1,5 +1,5 @@
 ![alt text](https://github.com/jarenpeters/dinQ/blob/main/images/dinqWH.png "dinQ")
-# [_dinQ_ - Find a court. Fast.](dinq.org)
+# [_dinQ_ - Find a court. Fast.](https://dinq.org/)
 
 ## Our inspiration
 Before coming to Purdue, we loved playing pickleball at our local courts with friends. So, we wanted to continue that fun here on campus, but the CoRec's courts are always full! Outside or inside, night or day, the pickleball courts always have people playing. This inspired us to build an easier way to break into pickleball games.
