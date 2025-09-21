@@ -44,11 +44,11 @@
     }
 
     .logo img {
-      width: auto%;          /* fill container edge-to-edge */
-      height: 100%;         /* keep proportions */
-      max-height: 160px;    /* optional cap so it doesn’t take over entire screen */
+      width: 100vw;     /* full viewport width */
+      height: auto;     /* keep aspect ratio */
+      max-height: 200px; /* optional cap */
       display: block;
-      object-fit: contain;  /* preserve aspect ratio */
+      margin: 0 auto;
     }
 
     .nav-buttons {
