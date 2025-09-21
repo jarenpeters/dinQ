@@ -26,41 +26,63 @@
       min-height: 100vh;
     }
 
+    /* container */
     .top-bar {
-      background: #1a2e1a;
-      border-radius: 16px;
-      padding: 12px 16px;
       display: flex;
-      flex-direction: row;   /* always in a row */
+      flex-direction: row;   /* keep everything on one line */
       align-items: center;
-      justify-content: flex-start; /* no big gap */
-      gap: 16px;             /* controlled spacing */
-      flex-wrap: nowrap;     /* prevent wrapping on small screens */
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+      gap: 12px;
+      padding: 12px 16px;
+      justify-content: space-between; /* logo left, buttons use remaining space */
+      flex-wrap: nowrap; /* important: do not allow wrapping */
     }
 
+    /* logo area */
+    .logo {
+      flex: 0 0 auto;      /* don't let logo expand to fill remaining space */
+      display: flex;
+      align-items: center;
+    }
     .logo img {
-      height: 50px; /* adjust as needed */
+      height: 56px;        /* control visual size (tweak as needed) */
+      width: auto;
       display: block;
+      max-width: 40%;      /* keep it reasonable relative to bar */
+      object-fit: contain;
     }
 
+    /* buttons wrapper — takes remaining horizontal space */
     .top-buttons {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      flex: 1 1 auto;      /* allow this area to shrink/grow */
+      min-width: 0;        /* CRITICAL to allow children to shrink inside flex */
+      justify-content: flex-end; /* push buttons to the right side */
+      align-items: center;
+      flex-wrap: nowrap;   /* keep buttons on one line */
     }
 
+    /* button style — allow shrinking, prevent internal wrapping */
     .nav-btn {
+      flex: 0 1 auto;      /* allow each button to shrink if needed */
+      min-width: 0;        /* CRITICAL so flex shrinking works */
+      padding: 8px 12px;
+      font-size: 0.95rem;
+      white-space: nowrap; /* prevent button text from wrapping to multiple lines */
+      overflow: hidden;
+      text-overflow: ellipsis; /* gracefully shorten text if it must shrink */
+      border-radius: 12px;
       background: #2d4a2d;
       color: #fff;
       border: 2px solid #3a5c3a;
-      padding: 10px 16px;
-      border-radius: 12px;
-      font-size: 0.95rem;
-      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-      white-space: nowrap; /* prevent text wrapping */
+    }
+
+    /* small-screen tweaks */
+    @media (max-width: 420px) {
+      .logo img { height: 48px; max-width: 35%; }   /* make logo a bit smaller on tiny screens */
+      .nav-btn { font-size: 0.82rem; padding: 6px 8px; } /* slightly smaller buttons so they fit */
+      .top-bar { gap: 8px; padding: 10px 12px; }
     }
 
     .nav-btn:hover {
@@ -73,9 +95,10 @@
     }
 
     .rules-btn {
-      width: 90%;   /* nearly full width */
-      max-width: 400px;
+      width: 100%;         /* take full width of container */
       padding: 14px 0;
+      border-radius: 16px;
+      font-size: 1rem;
     }
 
     .courts-section { flex: 1; display: flex; flex-direction: column; }
@@ -236,8 +259,9 @@
 <div class="app-container">
   <div class="top-bar">
     <div class="logo">
-      <img src="dinqWH.png" alt="dinQ Logo" />
+      <img src="dinqWH.png" alt="dinQ Logo">
     </div>
+
     <div class="top-buttons">
       <button class="nav-btn" onclick="openAddToQueue()">Add to Queue</button>
       <button class="nav-btn" onclick="openViewQueue()">View Queue</button>
