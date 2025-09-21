@@ -411,7 +411,7 @@
     if (!grid) return;
     grid.innerHTML = '';
 
-    document.getElementById('sectionTitle').textContent = currentPage === 0 ? 'South Courts' : 'North Courts';
+    document.getElementById('sectionTitle').textContent = currentPage === 0 ? 'North Courts' : 'South Courts';
 
     const start = currentPage * 6;
     const visible = courts.slice(start, start + 6);
