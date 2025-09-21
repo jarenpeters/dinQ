@@ -1,4 +1,4 @@
-![alt text](https://github.com/jarenpeters/dinQ/blob/main/images/dinqWH.png "dinQ")
+![alt text](https://github.com/jarenpeters/dinQ/blob/main/images/dinqlime.png "dinQ")
 # [_dinQ_ - Find a court. Fast.](https://dinq.org/)
 
 ## Our inspiration
