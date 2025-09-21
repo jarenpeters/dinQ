@@ -14,7 +14,7 @@ module.exports = merge(common, {
         { from: 'img', to: 'img' },
         { from: 'css', to: 'css' },
         { from: 'js/vendor', to: 'js/vendor' },
-        { from: 'dinqICON.ico', to: 'dinqICON.ico' },
+        { from: 'dinqpaddleicon.ico', to: 'dinqpaddleicon.ico' },
         { from: 'robots.txt', to: 'robots.txt' },
         { from: 'icondinq.png', to: 'icondinq.png' },
         { from: '404.html', to: '404.html' },
