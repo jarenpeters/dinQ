@@ -31,10 +31,12 @@
       border-radius: 16px;
       padding: 20px;
       display: flex;
-      flex-direction: column; /* stack logo above buttons */
+      flex-direction: column; /* logo above buttons */
+      align-items: center;
       gap: 16px;
       margin-bottom: 20px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+      min-height: 220px; /* gives more breathing room for the logo */
     }
 
     .logo {
@@ -43,12 +45,13 @@
     }
 
     .logo img {
-      width: 100%;        /* take full width of the bar */
+      width: 100%;        /* stretch across container */
       max-width: 100%;    /* don’t overflow */
-      height: auto;       /* keep aspect ratio */
-      max-height: 140px;  /* optional: limit the height so it doesn’t take over the screen */
-      object-fit: contain; /* keep it clean inside its box */
+      height: auto;       /* preserve aspect ratio */
+      max-height: 160px;  /* you can raise this if you want it even taller */
+      object-fit: contain;
     }
+
 
 
     .nav-buttons {
