@@ -15,7 +15,6 @@ module.exports = merge(common, {
         { from: 'css', to: 'css' },
         { from: 'js/vendor', to: 'js/vendor' },
         { from: 'finalicon.ico', to: 'finalicon.ico' },
-        { from: 'robots.txt', to: 'robots.txt' },
         { from: 'icondinq.png', to: 'icondinq.png' },
         { from: '404.html', to: '404.html' },
         { from: 'site.webmanifest', to: 'site.webmanifest' },
