@@ -39,12 +39,17 @@
 
     .logo {
       width: 100%;
-      text-align: center; /* keeps logo centered even on tiny screens */
+      text-align: center;
     }
 
     .logo img {
-      height: 100px; /* larger logo */
+      width: 100%;        /* take full width of the bar */
+      max-width: 100%;    /* don’t overflow */
+      height: auto;       /* keep aspect ratio */
+      max-height: 140px;  /* optional: limit the height so it doesn’t take over the screen */
+      object-fit: contain; /* keep it clean inside its box */
     }
+
 
     .nav-buttons {
       display: flex;
