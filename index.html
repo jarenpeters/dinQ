@@ -44,10 +44,10 @@
     }
 
     .logo img {
-      max-width: 80%;   /* scale based on container width */
-      height: auto;     /* keep the original aspect ratio */
+      width: 100%;          /* take full width of the container */
+      height: 120px;        /* control the height */
+      object-fit: contain;  /* keep aspect ratio inside that height */
       display: block;
-      margin: 0 auto;
     }
 
     .nav-buttons {
