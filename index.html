@@ -32,24 +32,28 @@
       padding: 20px;
       display: flex;
       flex-direction: column; /* stack logo above buttons */
-      align-items: center;    /* center logo */
       gap: 16px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      width: 100%;
+      text-align: center; /* keeps logo centered even on tiny screens */
     }
 
     .logo img {
-      height: 80px; /* bigger logo */
+      height: 100px; /* larger logo */
     }
 
     .nav-buttons {
       display: flex;
-      width: 100%; /* buttons span across */
+      width: 100%; /* row spans the full width */
       gap: 10px;
     }
 
     .nav-btn {
-      flex: 1; /* equal width buttons */
+      flex: 1; /* equal width for all buttons */
       text-align: center;
       background: #2d4a2d;
       color: #fff;
@@ -59,7 +63,7 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
     }
 
     .nav-btn:hover {
