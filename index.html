@@ -260,7 +260,7 @@
   </div>
 
   <div class="courts-section">
-    <div class="section-title" id="sectionTitle">South Courts</div>
+    <div class="section-title" id="sectionTitle">North Courts</div>
     <div class="courts-container">
       <button class="page-nav prev" onclick="changePage(-1)">‹</button>
       <div class="courts-grid" id="courtsGrid"></div>
@@ -416,7 +416,7 @@
     if (!grid) return;
     grid.innerHTML = '';
 
-    document.getElementById('sectionTitle').textContent = currentPage === 0 ? 'South Courts' : 'North Courts';
+    document.getElementById('sectionTitle').textContent = currentPage === 0 ? 'North Courts' : 'South Courts';
 
     const start = currentPage * 6;
     const visible = courts.slice(start, start + 6);
