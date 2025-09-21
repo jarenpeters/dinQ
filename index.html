@@ -44,11 +44,18 @@
     }
 
     .logo img {
-      width: 100vw;     /* full viewport width */
-      height: auto;     /* keep aspect ratio */
-      max-height: 200px; /* optional cap */
+      max-width: 100%;     /* still respect container edges */
+      height: auto;        /* preserve aspect ratio */
       display: block;
       margin: 0 auto;
+    }
+
+    /* On narrow screens, boost logo size relative to container */
+    @media (max-width: 480px) {
+      .logo img {
+        max-width: 140%;   /* allow it to grow beyond container width */
+        transform: translateX(-10%); /* recenters the overflow */
+      }
     }
 
     .nav-buttons {
