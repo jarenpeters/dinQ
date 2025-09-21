@@ -67,17 +67,21 @@
       background: #3a5c3a;
     }
 
-    .bottom-bar {
-      margin-top: 20px;
+    .app-footer {
+      background: #1a2e1a;
       text-align: center;
-      width: auto;
+      padding: 16px;
+      border-radius: 16px 16px 0 0;
+      margin-top: 20px;
+      box-shadow: 0 -3px 6px rgba(0,0,0,0.4);
     }
 
     .rules-btn {
-      width: 100%;         /* take full width of container */
+      width: 100%;          /* span full footer width */
+      max-width: 500px;     /* optional: keep it reasonable on wide screens */
       padding: 14px 0;
-      border-radius: 16px;
       font-size: 1rem;
+      border-radius: 12px;
     }
 
     .courts-section { flex: 0; display: flex; flex-direction: column; }
@@ -243,6 +247,7 @@
     </div>
   </div>
 
+  <!-- courts section -->
   <div class="courts-section">
     <div class="section-title" id="sectionTitle">South Courts</div>
     <div class="courts-container">
@@ -251,12 +256,18 @@
       <button class="page-nav next" onclick="changePage(1)">›</button>
     </div>
   </div>
+</div> <!-- end of .app-container -->
 
-  <!-- Rules button at the bottom -->
-  <div class="bottom-bar">
-    <button class="nav-btn rules-btn" onclick="openRules()">Rules</button>
-  </div>
-</div>
+<!-- Footer with Rules button -->
+<footer class="app-footer">
+  <button class="nav-btn rules-btn" onclick="openRules()">Rules</button>
+</footer>
+
+<!-- Your scripts should stay down here -->
+<script src="app.js"></script>
+</body>
+</html>
+
 
 <!-- Add to Queue Modal -->
 <div class="modal" id="addQueueModal">
