@@ -90,19 +90,19 @@
     }
 
     .courts-container {
-      flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      position: relative;
+      justify-content: center;
+      padding: 0 12px;
+      gap: 12px;
     }
 
     .courts-grid {
-      flex: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 18px;
-      padding: 0 28px;
+      grid-auto-rows: min-content; /* prevents tall empty rows */
+      gap: 12px;
     }
 
     .court {
@@ -228,8 +228,6 @@
 
     @media (max-width: 820px) {
       .courts-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); gap:12px; padding: 0 12px; }
-      .top-bar {margin-bottom: 6px}
-      .bottom-bar {margin-top: 6px}
     }
   </style>
 </head>
